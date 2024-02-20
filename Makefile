@@ -6,7 +6,7 @@
 #    By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/21 02:33:18 by nkannan           #+#    #+#              #
-#    Updated: 2024/02/21 02:33:28 by nkannan          ###   ########.fr        #
+#    Updated: 2024/02/21 04:54:07 by nkannan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,8 +15,8 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
 # ソースファイルとオブジェクトファイル
-SRC_CLIENT = client.c
-SRC_SERVER = server.c
+SRC_CLIENT = client.c ft_atoi/ft_atoi.c
+SRC_SERVER = server.c ft_atoi/ft_atoi.c
 OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
 OBJ_SERVER = $(SRC_SERVER:.c=.o)
 
