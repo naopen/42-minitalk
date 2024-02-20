@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:58 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/21 05:09:47 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/21 05:35:21 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	sig_handler(int signum, siginfo_t *info, void *ucontext)
 void	exit_handler(int signum)
 {
 	(void)signum;
-	ft_printf("Server is shutting down.\n");
+	ft_printf("\nServer is shutting down.\n");
 	exit(SUCCESS);
 }
 
@@ -44,6 +44,7 @@ int	main(void)
 {
 	pid_t				pid;
 	struct sigaction	act;
+	struct sigaction	act_exit;
 
 	pid = getpid();
 	ft_printf("Server PID: %d\n", pid);
@@ -51,11 +52,8 @@ int	main(void)
 	act.sa_sigaction = sig_handler;
 	sigaction(SIGUSR1, &act, NULL);
 	sigaction(SIGUSR2, &act, NULL);
-
-	struct sigaction act_exit;
 	act_exit.sa_handler = exit_handler;
 	sigaction(SIGINT, &act_exit, NULL);
-
 	while (1)
 		pause();
 	return (SUCCESS);
