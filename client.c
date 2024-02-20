@@ -12,22 +12,21 @@
 
 #include "minitalk.h"
 
-void send_char_as_bits(int pid, char ch)
+void	send_char_as_bits(int pid, char ch)
 {
-    int bit_index;
+	int	bit_index;
 
-    bit_index = 7;
-    while (bit_index >= 0)
-    {
-        if (ch & (1 << bit_index))
-            kill(pid, SIGUSR1);
-        else
-            kill(pid, SIGUSR2);
-        usleep(100);
-        bit_index--;
-    }
+	bit_index = 7;
+	while (bit_index >= 0)
+	{
+		if (ch & (1 << bit_index))
+			kill(pid, SIGUSR1);
+		else
+			kill(pid, SIGUSR2);
+		usleep(100);
+		bit_index--;
+	}
 }
-
 
 // void send_utf8_as_bits(int pid, char *str)
 // {
@@ -52,15 +51,14 @@ void	receive_ack(int signum)
 	(void)signum;
 }
 
-void setup_signals(struct sigaction *act)
+void	setup_signals(struct sigaction *act)
 {
-    act->sa_handler = receive_ack;
-    sigemptyset(&act->sa_mask);
-    act->sa_flags = 0;
-    sigaction(SIGUSR1, act, NULL);
-    sigaction(SIGUSR2, act, NULL);
+	act->sa_handler = receive_ack;
+	sigemptyset(&act->sa_mask);
+	act->sa_flags = 0;
+	sigaction(SIGUSR1, act, NULL);
+	sigaction(SIGUSR2, act, NULL);
 }
-
 
 int	main(int argc, char **argv)
 {
