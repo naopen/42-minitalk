@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/21 02:30:32 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 01:10:59 by nkannan          ###   ########.fr       */
+/*   Created: 2023/05/21 15:35:55 by nkannan           #+#    #+#             */
+/*   Updated: 2024/02/28 00:22:28 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
+#include "libft.h"
 
-# include "./libft/ft_printf/ft_printf.h"
-# include <signal.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
+// Outputs the string ’s’ to the given file descriptor, followed by a newline.
 
-# define ACK_RECEIVED 1
-# define ACK_NOT_RECEIVED 0
-
-int	ft_atoi(const char *str);
-
-#endif
+void	ft_putendl_fd(char *str, int fd)
+{
+	if (!str)
+		return ;
+	ft_putstr_fd(str, fd);
+	write(fd, "\n", 1);
+}

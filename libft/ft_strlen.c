@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_strlen.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/21 02:30:32 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 01:10:59 by nkannan          ###   ########.fr       */
+/*   Created: 2023/05/17 13:22:46 by nkannan           #+#    #+#             */
+/*   Updated: 2023/06/17 12:14:47 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
+#include "libft.h"
 
-# include "./libft/ft_printf/ft_printf.h"
-# include <signal.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
+// Return the length of the string.
 
-# define ACK_RECEIVED 1
-# define ACK_NOT_RECEIVED 0
+size_t	ft_strlen(const char *str)
+{
+	size_t	i;
 
-int	ft_atoi(const char *str);
-
-#endif
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}

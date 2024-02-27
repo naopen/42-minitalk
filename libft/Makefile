@@ -5,47 +5,44 @@
 #                                                     +:+ +:+         +:+      #
 #    By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/02/21 02:33:18 by nkannan           #+#    #+#              #
-#    Updated: 2024/02/28 01:39:17 by nkannan          ###   ########.fr        #
+#    Created: 2024/02/28 00:29:49 by nkannan           #+#    #+#              #
+#    Updated: 2024/02/28 01:54:39 by nkannan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME_CLIENT = client
-NAME_SERVER = server
+NAME = libft.a
+PRINTF_DIR = ft_printf
+PRINTF_LIB = $(PRINTF_DIR)/libftprintf.a
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
+AR = ar
+ARFLAGS = rcs
+LIBTOOL = libtool -static -o
+RM = rm -f
 
-LIBFT = libft/libft.a
-LIBFT_DIR = libft
+SRCS = ft_atoi.c ft_strlen.c ft_putstr_fd.c ft_putendl_fd.c
+OBJS = $(SRCS:.c=.o)
 
-SRC_CLIENT = client.c
-SRC_SERVER = server.c
+all: $(NAME)
 
-OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
-OBJ_SERVER = $(SRC_SERVER:.c=.o)
+$(NAME): $(OBJS) $(PRINTF_LIB)
+	$(LIBTOOL) $@ $(OBJS) $(PRINTF_LIB)
 
-all: $(LIBFT) $(NAME_CLIENT) $(NAME_SERVER)
-
-$(NAME_CLIENT): $(OBJ_CLIENT)
-	$(CC) $(CFLAGS) -o $@ $^ -L$(LIBFT_DIR) -lft
-
-$(NAME_SERVER): $(OBJ_SERVER)
-	$(CC) $(CFLAGS) -o $@ $^ -L$(LIBFT_DIR) -lft
-
-$(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
+$(PRINTF_LIB):
+	$(MAKE) -C $(PRINTF_DIR)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ_CLIENT) $(OBJ_SERVER)
-	$(MAKE) -C $(LIBFT_DIR) clean
+	$(RM) $(OBJS)
+	$(MAKE) -C $(PRINTF_DIR) clean
 
 fclean: clean
-	$(RM) $(NAME_CLIENT) $(NAME_SERVER)
-	$(MAKE) -C $(LIBFT_DIR) fclean
+	$(RM) $(NAME)
+	$(MAKE) -C $(PRINTF_DIR) fclean
+	$(RM) $(PRINTF_LIB)
 
 re: fclean all
 
