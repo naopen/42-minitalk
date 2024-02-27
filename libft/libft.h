@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/21 02:30:32 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 03:01:45 by nkannan          ###   ########.fr       */
+/*   Created: 2024/02/28 00:23:55 by nkannan           #+#    #+#             */
+/*   Updated: 2024/02/28 06:23:07 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
+#ifndef LIBFT_H
+# define LIBFT_H
 
-# include "./libft/ft_printf/ft_printf.h"
-# include <signal.h>
-# include <stdio.h>
-# include <stdlib.h>
 # include <unistd.h>
+# include <stddef.h>
+# include <stdlib.h>
+# include <limits.h>
 
-# define ACK_RECEIVED 1
-# define ACK_NOT_RECEIVED 0
-
-# define CHAR_BIT_COUNT 8
-# define ACK_WAIT 10
-# define ACK_TIMEOUT 1000000
-
-int	ft_atoi(const char *str);
+size_t	ft_strlen(const char *str);
+int		ft_atoi(const char *str);
+void	ft_putstr_fd(char *str, int fd);
+void	ft_putendl_fd(char *str, int fd);
+int		ft_isdigit(int c);
+int		ft_strall(const char *str, int (*f)(int));
 
 #endif

@@ -6,47 +6,63 @@
 #    By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/21 02:33:18 by nkannan           #+#    #+#              #
-#    Updated: 2024/02/21 04:54:07 by nkannan          ###   ########.fr        #
+#    Updated: 2024/02/28 06:40:55 by nkannan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# コンパイラとフラグの設定
+NAME_CLIENT = client
+NAME_SERVER = server
+NAME_CLIENT_BONUS = client_bonus
+NAME_SERVER_BONUS = server_bonus
+
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
-# ソースファイルとオブジェクトファイル
-SRC_CLIENT = client.c ft_atoi/ft_atoi.c
-SRC_SERVER = server.c ft_atoi/ft_atoi.c
+LIBFT = libft/libft.a
+LIBFT_DIR = libft
+
+SRC_CLIENT = client.c
+SRC_SERVER = server.c
+SRC_CLIENT_BONUS = client_bonus.c
+SRC_SERVER_BONUS = server_bonus.c
+
 OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
 OBJ_SERVER = $(SRC_SERVER:.c=.o)
+OBJ_CLIENT_BONUS = $(SRC_CLIENT_BONUS:.c=.o)
+OBJ_SERVER_BONUS = $(SRC_SERVER_BONUS:.c=.o)
 
-# プログラム名
-NAME_CLIENT = client
-NAME_SERVER = server
+MAKE = make
 
-# ft_printfライブラリのパス
-LIBFTPRINTF = ft_printf/libftprintf.a
+all: $(LIBFT) $(NAME_CLIENT) $(NAME_SERVER)
 
-# ルール定義
-all: $(NAME_CLIENT) $(NAME_SERVER)
+$(NAME_CLIENT): $(OBJ_CLIENT)
+	$(CC) $(CFLAGS) -o $@ $^ -L$(LIBFT_DIR) -lft
 
-$(NAME_CLIENT): $(LIBFTPRINTF) $(OBJ_CLIENT)
-	$(CC) $(CFLAGS) $(OBJ_CLIENT) $(LIBFTPRINTF) -o $(NAME_CLIENT)
+$(NAME_SERVER): $(OBJ_SERVER)
+	$(CC) $(CFLAGS) -o $@ $^ -L$(LIBFT_DIR) -lft
 
-$(NAME_SERVER): $(LIBFTPRINTF) $(OBJ_SERVER)
-	$(CC) $(CFLAGS) $(OBJ_SERVER) $(LIBFTPRINTF) -o $(NAME_SERVER)
+$(LIBFT):
+	$(MAKE) -C $(LIBFT_DIR)
 
-$(LIBFTPRINTF):
-	make -C ft_printf
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ_CLIENT) $(OBJ_SERVER)
-	make -C ft_printf clean
+	$(RM) $(OBJ_CLIENT) $(OBJ_SERVER)
+	$(MAKE) -C $(LIBFT_DIR) clean
 
 fclean: clean
-	rm -f $(NAME_CLIENT) $(NAME_SERVER)
-	make -C ft_printf fclean
+	$(RM) $(NAME_CLIENT) $(NAME_SERVER)
+	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+bonus: $(LIBFT) $(NAME_CLIENT_BONUS) $(NAME_SERVER_BONUS)
+
+$(NAME_CLIENT_BONUS): $(OBJ_CLIENT_BONUS)
+	$(CC) $(CFLAGS) -o $@ $^ -L$(LIBFT_DIR) -lft
+
+$(NAME_SERVER_BONUS): $(OBJ_SERVER_BONUS)
+	$(CC) $(CFLAGS) -o $@ $^ -L$(LIBFT_DIR) -lft
+
+.PHONY: all clean fclean re bonus

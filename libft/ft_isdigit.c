@@ -1,31 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_isdigit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/21 02:30:32 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 03:01:45 by nkannan          ###   ########.fr       */
+/*   Created: 2023/05/17 13:11:10 by nkannan           #+#    #+#             */
+/*   Updated: 2023/06/17 11:46:42 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
+#include "libft.h"
 
-# include "./libft/ft_printf/ft_printf.h"
-# include <signal.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
+// If c is a digit, return 1. Otherwise, return 0.
 
-# define ACK_RECEIVED 1
-# define ACK_NOT_RECEIVED 0
-
-# define CHAR_BIT_COUNT 8
-# define ACK_WAIT 10
-# define ACK_TIMEOUT 1000000
-
-int	ft_atoi(const char *str);
-
-#endif
+int	ft_isdigit(int c)
+{
+	if (c <= '9' && c >= '0')
+		return (1);
+	return (0);
+}

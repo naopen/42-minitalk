@@ -1,31 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minitalk.h                                         :+:      :+:    :+:   */
+/*   ft_strall.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/21 02:30:32 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 03:01:45 by nkannan          ###   ########.fr       */
+/*   Created: 2024/02/28 06:21:08 by nkannan           #+#    #+#             */
+/*   Updated: 2024/02/28 06:22:25 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINITALK_H
-# define MINITALK_H
+#include "libft.h"
 
-# include "./libft/ft_printf/ft_printf.h"
-# include <signal.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
+// Apply the function f to all characters in the string str.
 
-# define ACK_RECEIVED 1
-# define ACK_NOT_RECEIVED 0
-
-# define CHAR_BIT_COUNT 8
-# define ACK_WAIT 10
-# define ACK_TIMEOUT 1000000
-
-int	ft_atoi(const char *str);
-
-#endif
+int	ft_strall(const char *str, int (*f)(int))
+{
+	if (!str || !f)
+		return (0);
+	while (*str)
+	{
+		if (!f(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}

@@ -1,36 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 07:27:32 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/28 06:32:33 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./libft/libft.h"
-#include "minitalk.h"
-
-// サーバーからのACKを受け取ったかどうかを示すフラグ
-// static: このファイル内でのみ有効
-// volatile: コンパイラが最適化を行わないようにする
-// sig_atomic_t: シグナルハンドラ内で安全にアクセスできる整数型
+#include "minitalk_bonus.h"
 
 static volatile sig_atomic_t	g_ack_received = ACK_NOT_RECEIVED;
-
-// サーバーからのACKシグナルを受け取った際に呼ばれる関数
 
 static void	ack_handler(int signo)
 {
 	(void)signo;
 	g_ack_received = ACK_RECEIVED;
 }
-
-// サーバーからのACKが来るまで待機する関数
-// 一定時間経過してもACKが来ない場合はエラーを出力して終了
-// タイムアウトしなかった場合はACKの受信フラグをリセットし、次のACKを待機する準備をする
 
 static void	wait_for_ack(void)
 {
@@ -50,9 +39,6 @@ static void	wait_for_ack(void)
 	g_ack_received = ACK_NOT_RECEIVED;
 }
 
-// 文字列からPIDを解析し、有効なPIDを返す関数
-// もしpid_strを全桁チェックし、数字以外の文字が含まれていたらエラーを出力して終了
-
 static pid_t	get_server_pid(const char *pid_str)
 {
 	long	pid;
@@ -60,19 +46,10 @@ static pid_t	get_server_pid(const char *pid_str)
 	if (*pid_str == '\0' || !ft_strall(pid_str, ft_isdigit))
 		return (printf("pid: %s\n", pid_str), -1);
 	pid = ft_atoi(pid_str);
-	if (pid <= 100 || pid > 99998)
+	if (pid <= 0 || pid > INT_MAX)
 		return (printf("pid: %ld\n", pid), -1);
 	return ((pid_t)pid);
 }
-
-// サーバーにメッセージのビットを送信する関数
-// メッセージの各文字をビットに分解し、左から右へと送信する
-// (<< は左シフト演算子で、ビットを左に移動。)
-// (例えば、1U << 2 は、1を二進数で表すと0001で、これを2ビット左にシフトすると0100になる)
-// (chとビット毎の論理積を取り、chのiビット目が1かどうかを判定する)
-// (chのiビット目が1の場合はSIGUSR2(バイナリが1)を送信し、0の場合はSIGUSR1(バイナリが0)を送信)
-// シグナルの送信に失敗した場合はエラーを出力して終了
-// 送信したビットごとにACKの受信を待機する
 
 static void	send_bits_to_server(pid_t server_pid, const char *msg)
 {
@@ -99,11 +76,6 @@ static void	send_bits_to_server(pid_t server_pid, const char *msg)
 		}
 	}
 }
-
-// クライアントのメイン関数
-// 引数の数が正しくない場合はエラーを出力して終了
-// サーバーのPIDを解析し、無効なPIDの場合はエラーを出力して終了
-// SIGUSR1シグナルのハンドラを設定し、メッセージをサーバーに送信する
 
 int	main(int argc, char **argv)
 {
