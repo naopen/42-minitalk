@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 18:04:20 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 21:41:10 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,10 @@ int	main(int argc, char **argv)
 	struct sigaction	act;
 
 	if (argc != 3)
-		return (ft_printf("Usage: %s [PID] [string]\n", argv[0]), ERROR);
+		return (ft_printf("Usage: %s [PID] [string]\n", argv[0]), -1);
 	pid = ft_atoi(argv[1]);
 	if (pid <= 0)
-		return (ft_printf("Invalid PID\n"), ERROR);
+		return (ft_printf("Invalid PID\n"), -1);
 	setup_signals(&act);
 	while (*argv[2])
 	{

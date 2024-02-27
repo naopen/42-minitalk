@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:58 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 19:38:50 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 21:41:17 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static void	sig_handler(int signum, siginfo_t *info, void *ucontext)
 		if (ch == '\0')
 			ft_printf("\n");
 		if (kill(info->si_pid, SIGUSR1) == -1)
-			exit(ERROR);
+			exit(-1);
 		ch = 0;
 		bit_index = 0;
 	}
