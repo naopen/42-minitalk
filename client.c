@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 12:59:56 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 14:22:31 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 static volatile sig_atomic_t	g_ack;
 
-void	receive_ack(int signum)
+static void	receive_ack(int signum)
 {
 	g_ack = 1;
 	(void)signum;
 }
 
-void	setup_signals(struct sigaction *act)
+static void	setup_signals(struct sigaction *act)
 {
 	act->sa_handler = receive_ack;
 	sigemptyset(&act->sa_mask);
@@ -29,7 +29,7 @@ void	setup_signals(struct sigaction *act)
 	sigaction(SIGUSR2, act, NULL);
 }
 
-void	send_char_as_bits(int pid, char ch)
+static void	send_char_as_bits(int pid, char ch)
 {
 	int	bit_index;
 

@@ -6,13 +6,13 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:58 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/21 05:35:21 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 14:22:43 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	sig_handler(int signum, siginfo_t *info, void *ucontext)
+static void	sig_handler(int signum, siginfo_t *info, void *ucontext)
 {
 	static char	ch = 0;
 	static int	bit_index = 0;
@@ -33,7 +33,7 @@ void	sig_handler(int signum, siginfo_t *info, void *ucontext)
 	(void)ucontext;
 }
 
-void	exit_handler(int signum)
+static void	exit_handler(int signum)
 {
 	(void)signum;
 	ft_printf("\nServer is shutting down.\n");

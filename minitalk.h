@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:30:32 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 12:57:43 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 14:25:08 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,6 @@
 # define ERROR -1
 # define SUCCESS 0
 
-void		send_char_as_bits(int pid, char ch);
-void		handler(int signum, siginfo_t *info, void *ucontext);
-void		sig_handler(int signum, siginfo_t *info, void *ucontext);
-
 int			ft_atoi(const char *str);
-
-typedef struct s_communication
-{
-	char	current_char;
-	int		bit_index;
-	pid_t	client_pid;
-}			t_communication;
 
 #endif
