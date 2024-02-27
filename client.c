@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 14:22:31 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 14:54:38 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@ static void	setup_signals(struct sigaction *act)
 	sigaction(SIGUSR2, act, NULL);
 }
 
-static void	send_char_as_bits(int pid, char ch)
+static void	send_char_as_bits(int pid, char str)
 {
 	int	bit_index;
 
 	bit_index = 7;
 	while (bit_index >= 0)
 	{
-		if (ch & (1 << bit_index))
+		if (str & (1 << bit_index))
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
