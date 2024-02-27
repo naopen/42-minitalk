@@ -6,12 +6,17 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 06:24:26 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/28 06:26:52 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./libft/libft.h"
 #include "minitalk.h"
+
+// サーバーからのACKを受け取ったかどうかを示すフラグ
+// static: このファイル内でのみ有効
+// volatile: コンパイラが最適化を行わないようにする
+// sig_atomic_t: シグナルハンドラ内で安全にアクセスできる整数型
 
 static volatile sig_atomic_t	g_ack_received = ACK_NOT_RECEIVED;
 
