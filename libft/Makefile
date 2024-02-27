@@ -6,7 +6,7 @@
 #    By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/28 00:29:49 by nkannan           #+#    #+#              #
-#    Updated: 2024/02/28 05:35:13 by nkannan          ###   ########.fr        #
+#    Updated: 2024/02/28 06:23:28 by nkannan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ ARFLAGS = rcs
 LIBTOOL = libtool -static -o
 RM = rm -f
 
-SRCS = ft_atoi.c ft_strlen.c ft_putstr_fd.c ft_putendl_fd.c
+SRCS = ft_atoi.c ft_strlen.c ft_putstr_fd.c ft_putendl_fd.c ft_isdigit.c ft_strall.c
 OBJS = $(SRCS:.c=.o)
 
 MAKE = make

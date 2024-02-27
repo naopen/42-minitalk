@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:58 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 05:31:25 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/28 05:39:04 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 // 1文字分のビットを受信したら、文字を出力し、変数をリセットする
 // クライアントのPIDを記録し、クライアントに受信完了を通知する
 // クライアントに受信完了を通知する際にエラーが発生したら、エラーを出力して終了
+
 static void	receive_bit(int signo, siginfo_t *info, void *context)
 {
 	static char		current_char = 0;
