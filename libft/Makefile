@@ -6,7 +6,7 @@
 #    By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/28 00:29:49 by nkannan           #+#    #+#              #
-#    Updated: 2024/02/28 01:54:39 by nkannan          ###   ########.fr        #
+#    Updated: 2024/02/28 05:35:13 by nkannan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,8 @@ RM = rm -f
 
 SRCS = ft_atoi.c ft_strlen.c ft_putstr_fd.c ft_putendl_fd.c
 OBJS = $(SRCS:.c=.o)
+
+MAKE = make
 
 all: $(NAME)
 

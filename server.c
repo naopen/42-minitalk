@@ -6,56 +6,72 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:58 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 21:49:00 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/28 05:31:25 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "./libft/libft.h"
 #include "minitalk.h"
 
-static void	sig_handler(int signum, siginfo_t *info, void *ucontext)
+// クライアントから送られてくるビットを受け取り、文字を組み立てるハンドラ
+// クライアントからのビットを受け取るたびに呼ばれる
+// 受信したビットを左にシフトして、新しいビットを加える
+// もしsignoがSIGUSR2なら最下位ビットを1に設定
+// （たとえば、文字 'A' のASCIIコードは 01000001 です。クライアントは、この8ビットのシーケンスを一つずつサーバーに送信します。）
+// （最初のビットは 0 なので、SIGUSR1 が送信されます。次のビットは 1 なので、SIGUSR2 が送信されます。）
+// 1文字分のビットを受信したら、文字を出力し、変数をリセットする
+// クライアントのPIDを記録し、クライアントに受信完了を通知する
+// クライアントに受信完了を通知する際にエラーが発生したら、エラーを出力して終了
+static void	receive_bit(int signo, siginfo_t *info, void *context)
 {
-	static char	ch = 0;
-	static int	bit_index = 0;
+	static char		current_char = 0;
+	static int		bits_received = 0;
+	static pid_t	client_pid = 0;
 
-	if (signum == SIGUSR1)
-		ch |= (1 << (7 - bit_index));
-	else if (signum == SIGUSR2)
-		ch &= ~(1 << (7 - bit_index));
-	if (++bit_index == 8)
+	(void)context;
+	current_char <<= 1;
+	if (signo == SIGUSR2)
+		current_char |= 1;
+	bits_received++;
+	if (bits_received == CHAR_BIT_COUNT)
 	{
-		ft_printf("%c", ch);
-		if (ch == '\0')
-			ft_printf("\n");
-		if (kill(info->si_pid, SIGUSR1) == -1)
-			exit(-1);
-		ch = 0;
-		bit_index = 0;
+		write(STDOUT_FILENO, &current_char, 1);
+		if (current_char == '\0')
+			write(STDOUT_FILENO, "\n", 1);
+		current_char = 0;
+		bits_received = 0;
 	}
-	(void)ucontext;
+	if (info->si_pid != 0)
+		client_pid = info->si_pid;
+	if (client_pid != 0 && kill(client_pid, SIGUSR1) == -1)
+	{
+		ft_putendl_fd("Error: failed to send signal", STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
 }
 
-static void	exit_handler(int signum)
-{
-	(void)signum;
-	ft_printf("\nServer is shutting down.\n");
-	exit(0);
-}
+// サーバーのメイン関数
+// シグナルハンドラを設定し、無限ループでシグナルを待機する
+// まず、このプロセスのPIDを表示
+// 次に、sigaction構造体を初期化し、ブロックするシグナルはないということを設定
+// システムがシグナルに関する追加情報をハンドラ関数に渡せるように、sa_flags に SA_SIGINFO フラグを設定
+// シグナルハンドラとして、receive_bit 関数を設定
+// 実際にシグナル SIGUSR1 と SIGUSR2 に対するシグナルハンドラを、sigaction 関数で設定
 
 int	main(void)
 {
 	struct sigaction	act;
-	struct sigaction	act_exit;
 
 	ft_printf("Server PID: %d\n", getpid());
-	act.sa_sigaction = sig_handler;
+	sigemptyset(&act.sa_mask);
 	act.sa_flags = SA_SIGINFO;
-	act.sa_flags |= SA_RESTART;
-	sigaddset(&act.sa_mask, SIGUSR1);
-	sigaddset(&act.sa_mask, SIGUSR2);
-	sigaction(SIGUSR1, &act, NULL);
-	sigaction(SIGUSR2, &act, NULL);
-	act_exit.sa_handler = exit_handler;
-	sigaction(SIGINT, &act_exit, NULL);
+	act.sa_sigaction = receive_bit;
+	if (sigaction(SIGUSR1, &act, NULL) == -1 || sigaction(SIGUSR2, &act,
+			NULL) == -1)
+	{
+		ft_putendl_fd("Error: unable to set signal handler", STDERR_FILENO);
+		exit(EXIT_FAILURE);
+	}
 	while (1)
 		pause();
 	return (0);

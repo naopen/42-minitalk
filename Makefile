@@ -6,7 +6,7 @@
 #    By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/21 02:33:18 by nkannan           #+#    #+#              #
-#    Updated: 2024/02/28 01:39:17 by nkannan          ###   ########.fr        #
+#    Updated: 2024/02/28 05:34:44 by nkannan          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,8 @@ SRC_SERVER = server.c
 
 OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
 OBJ_SERVER = $(SRC_SERVER:.c=.o)
+
+MAKE = make
 
 all: $(LIBFT) $(NAME_CLIENT) $(NAME_SERVER)
 

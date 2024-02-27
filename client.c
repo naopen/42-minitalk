@@ -6,71 +6,108 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 23:58:28 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/28 05:31:52 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "./libft/libft.h"
 #include "minitalk.h"
 
-volatile sig_atomic_t	g_received_ack = 0;
+static volatile sig_atomic_t	g_ack_received = 0;
 
-static void	receive_ack(int sig)
+// サーバーからのACKシグナルを受け取った際に呼ばれる関数
+static void	ack_handler(int signo)
 {
-	(void)sig;
-	g_received_ack = 1;
+	(void)signo;
+	g_ack_received = 1;
 }
 
-static void	setup_signals(struct sigaction *act)
+// サーバーからのACKが来るまで待機する関数
+// 一定時間経過してもACKが来ない場合はエラーを出力して終了
+// タイムアウトしなかった場合はACKの受信フラグをリセットし、次のACKを待機する準備をする
+static void	wait_for_ack(void)
 {
-	act->sa_handler = receive_ack;
-	sigemptyset(&act->sa_mask);
-	act->sa_flags = 0;
-	sigaction(SIGUSR1, act, NULL);
-	sigaction(SIGUSR2, act, NULL);
-}
+	unsigned int	time_waited;
 
-static void	send_bit(int pid, int bit)
-{
-	if (bit)
-		kill(pid, SIGUSR1);
-	else
-		kill(pid, SIGUSR2);
-	usleep(50);
-}
-
-static void	send_char_as_bits(int pid, char ch)
-{
-	int	bit_index;
-
-	bit_index = 7;
-	while (bit_index >= 0)
+	time_waited = 0;
+	while (!g_ack_received)
 	{
-		g_received_ack = 0;
-		send_bit(pid, (ch >> bit_index) & 1);
-		bit_index--;
+		usleep(ACK_WAIT);
+		time_waited += ACK_WAIT;
+		if (time_waited >= ACK_TIMEOUT)
+		{
+			ft_putendl_fd("Error: timeout", STDERR_FILENO);
+			exit(EXIT_FAILURE);
+		}
+	}
+	g_ack_received = 0;
+}
+
+// 文字列からPIDを解析し、有効なPIDを返す関数
+static pid_t	get_server_pid(const char *pid_str)
+{
+	long	pid;
+
+	pid = ft_atoi(pid_str);
+	if (pid <= 0 || pid > INT_MAX)
+		return (-1);
+	return ((pid_t)pid);
+}
+
+// サーバーにメッセージのビットを送信する関数
+// メッセージの各文字をビットに分解し、左から右へと送信する
+// シグナルの送信に失敗した場合はエラーを出力して終了
+// 送信したビットごとにACKの受信を待機する
+static void	send_bits_to_server(pid_t server_pid, const char *msg)
+{
+	unsigned int	i;
+	char			c;
+	int				kill_result;
+
+	while (*msg)
+	{
+		c = *msg++;
+		i = CHAR_BIT_COUNT;
+		while (i--)
+		{
+			if ((c & (1U << i)) != 0)
+				kill_result = kill(server_pid, SIGUSR2);
+			else
+				kill_result = kill(server_pid, SIGUSR1);
+			if (kill_result == -1)
+			{
+				ft_putendl_fd("Error: failed to send signal", STDERR_FILENO);
+				exit(EXIT_FAILURE);
+			}
+			wait_for_ack();
+		}
 	}
 }
 
+// クライアントのメイン関数
+// 引数の数が正しくない場合はエラーを出力して終了
+// サーバーのPIDを解析し、無効なPIDの場合はエラーを出力して終了
+// SIGUSR1シグナルのハンドラを設定し、メッセージをサーバーに送信する
 int	main(int argc, char **argv)
 {
-	pid_t				pid;
-	struct sigaction	act;
+	pid_t	server_pid;
 
 	if (argc != 3)
-		return (ft_printf("Usage: %s [PID] [string]\n", argv[0]), -1);
-	pid = ft_atoi(argv[1]);
-	if (pid <= 0)
-		return (ft_printf("Invalid PID\n"), -1);
-	setup_signals(&act);
-	while (*argv[2])
 	{
-		g_received_ack = 0;
-		send_char_as_bits(pid, *argv[2]++);
-		while (!g_received_ack)
-			pause();
+		ft_putendl_fd("Usage: client [server PID] [message]", STDERR_FILENO);
+		return (EXIT_FAILURE);
 	}
-	send_char_as_bits(pid, '\0');
-	while (!g_received_ack)
-		pause();
-	return (0);
+	server_pid = get_server_pid(argv[1]);
+	if (server_pid == -1)
+	{
+		ft_putendl_fd("Error: invalid PID", STDERR_FILENO);
+		return (EXIT_FAILURE);
+	}
+	if (signal(SIGUSR1, ack_handler) == SIG_ERR)
+	{
+		ft_putendl_fd("Error: cannot set signal handler", STDERR_FILENO);
+		return (EXIT_FAILURE);
+	}
+	send_bits_to_server(server_pid, argv[2]);
+	return (EXIT_SUCCESS);
 }
