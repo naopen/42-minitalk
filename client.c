@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 06:26:52 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/28 07:27:32 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,13 +60,17 @@ static pid_t	get_server_pid(const char *pid_str)
 	if (*pid_str == '\0' || !ft_strall(pid_str, ft_isdigit))
 		return (printf("pid: %s\n", pid_str), -1);
 	pid = ft_atoi(pid_str);
-	if (pid <= 0 || pid > INT_MAX)
+	if (pid <= 100 || pid > 99998)
 		return (printf("pid: %ld\n", pid), -1);
 	return ((pid_t)pid);
 }
 
 // サーバーにメッセージのビットを送信する関数
 // メッセージの各文字をビットに分解し、左から右へと送信する
+// (<< は左シフト演算子で、ビットを左に移動。)
+// (例えば、1U << 2 は、1を二進数で表すと0001で、これを2ビット左にシフトすると0100になる)
+// (chとビット毎の論理積を取り、chのiビット目が1かどうかを判定する)
+// (chのiビット目が1の場合はSIGUSR2(バイナリが1)を送信し、0の場合はSIGUSR1(バイナリが0)を送信)
 // シグナルの送信に失敗した場合はエラーを出力して終了
 // 送信したビットごとにACKの受信を待機する
 
