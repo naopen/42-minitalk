@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 15:01:47 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 16:59:59 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	send_char_as_bits(int pid, char str)
 			kill(pid, SIGUSR1);
 		else
 			kill(pid, SIGUSR2);
-		usleep(100);
+		usleep(50);
 		bit_index--;
 	}
 }
