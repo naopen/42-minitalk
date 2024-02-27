@@ -6,22 +6,27 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:58 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 05:39:04 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/28 07:48:23 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./libft/libft.h"
 #include "minitalk.h"
 
-// クライアントから送られてくるビットを受け取り、文字を組み立てるハンドラ
-// クライアントからのビットを受け取るたびに呼ばれる
-// 受信したビットを左にシフトして、新しいビットを加える
-// もしsignoがSIGUSR2なら最下位ビットを1に設定
-// （たとえば、文字 'A' のASCIIコードは 01000001 です。クライアントは、この8ビットのシーケンスを一つずつサーバーに送信します。）
-// （最初のビットは 0 なので、SIGUSR1 が送信されます。次のビットは 1 なので、SIGUSR2 が送信されます。）
-// 1文字分のビットを受信したら、文字を出力し、変数をリセットする
-// クライアントのPIDを記録し、クライアントに受信完了を通知する
-// クライアントに受信完了を通知する際にエラーが発生したら、エラーを出力して終了
+// Handler that receives bits sent from the client and
+//  assembles them into characters.
+// Called every time a bit is received from the client.
+// Shifts the received bits to the left and adds the new bit.
+// If signo is SIGUSR2, set the least significant bit to 1.
+// (For example, the ASCII code for the character 'A' is 01000001.
+//  The client sends these 8 bits to the server one by one.)
+// (The first bit is 0, so SIGUSR1 is sent.
+//  The next bit is 1, so SIGUSR2 is sent.)
+// Once all the bits for a character are received,
+//  output the character and reset the variables.
+// Record the client's PID and notify the client of the successful reception.
+// If an error occurs while notifying the client of the successful reception,
+//  output the error and terminate.
 
 static void	receive_bit(int signo, siginfo_t *info, void *context)
 {
@@ -51,13 +56,16 @@ static void	receive_bit(int signo, siginfo_t *info, void *context)
 	}
 }
 
-// サーバーのメイン関数
-// シグナルハンドラを設定し、無限ループでシグナルを待機する
-// まず、このプロセスのPIDを表示
-// 次に、sigaction構造体を初期化し、ブロックするシグナルはないということを設定
-// システムがシグナルに関する追加情報をハンドラ関数に渡せるように、sa_flags に SA_SIGINFO フラグを設定
-// シグナルハンドラとして、receive_bit 関数を設定
-// 実際にシグナル SIGUSR1 と SIGUSR2 に対するシグナルハンドラを、sigaction 関数で設定
+// Server's main function.
+// Sets up signal handler and waits for signals in an infinite loop.
+// First, displays the PID of this process.
+// Next, initializes the sigaction structure
+//  and sets it to indicate no signals are blocked.
+// Sets the SA_SIGINFO flag in sa_flags
+//  so the system can pass additional information to the handler function.
+// Sets the receive_bit function as the signal handler.
+// Actually sets the signal handlers
+//  for SIGUSR1 and SIGUSR2 using the sigaction function.
 
 int	main(void)
 {

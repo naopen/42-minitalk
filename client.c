@@ -6,21 +6,22 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 07:27:32 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/28 07:53:16 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./libft/libft.h"
 #include "minitalk.h"
 
-// サーバーからのACKを受け取ったかどうかを示すフラグ
-// static: このファイル内でのみ有効
-// volatile: コンパイラが最適化を行わないようにする
-// sig_atomic_t: シグナルハンドラ内で安全にアクセスできる整数型
+// Flag indicating whether an ACK from the server has been received.
+// static: Valid only within this file.
+// volatile: Prevents the compiler from performing optimizations.
+// sig_atomic_t:
+//  An integer type that can be safely accessed within a signal handler.
 
 static volatile sig_atomic_t	g_ack_received = ACK_NOT_RECEIVED;
 
-// サーバーからのACKシグナルを受け取った際に呼ばれる関数
+// Function called when an ACK signal is received from the server.
 
 static void	ack_handler(int signo)
 {
@@ -28,9 +29,11 @@ static void	ack_handler(int signo)
 	g_ack_received = ACK_RECEIVED;
 }
 
-// サーバーからのACKが来るまで待機する関数
-// 一定時間経過してもACKが来ない場合はエラーを出力して終了
-// タイムアウトしなかった場合はACKの受信フラグをリセットし、次のACKを待機する準備をする
+// Function that waits for an ACK from the server.
+// If the ACK does not arrive after a certain period of time,
+//  outputs an error and terminates.
+// If there is no timeout,
+//  resets the ACK received flag and prepares to wait for the next ACK.
 
 static void	wait_for_ack(void)
 {
@@ -50,8 +53,11 @@ static void	wait_for_ack(void)
 	g_ack_received = ACK_NOT_RECEIVED;
 }
 
-// 文字列からPIDを解析し、有効なPIDを返す関数
-// もしpid_strを全桁チェックし、数字以外の文字が含まれていたらエラーを出力して終了
+// Function that parses a PID from a string and returns a valid PID.
+// If non-numeric characters are found upon checking all digits of pid_str,
+//  outputs an error and terminates.
+// If pid_str is empty, or if the converted PID is below 100 or above 99998,
+//  outputs an error and terminates.
 
 static pid_t	get_server_pid(const char *pid_str)
 {
@@ -65,14 +71,18 @@ static pid_t	get_server_pid(const char *pid_str)
 	return ((pid_t)pid);
 }
 
-// サーバーにメッセージのビットを送信する関数
-// メッセージの各文字をビットに分解し、左から右へと送信する
-// (<< は左シフト演算子で、ビットを左に移動。)
-// (例えば、1U << 2 は、1を二進数で表すと0001で、これを2ビット左にシフトすると0100になる)
-// (chとビット毎の論理積を取り、chのiビット目が1かどうかを判定する)
-// (chのiビット目が1の場合はSIGUSR2(バイナリが1)を送信し、0の場合はSIGUSR1(バイナリが0)を送信)
-// シグナルの送信に失敗した場合はエラーを出力して終了
-// 送信したビットごとにACKの受信を待機する
+// Function to send the bits of a message to the server.
+// Decomposes each character of the message into bits
+//  and transmits them from left to right.
+// (<< is the left shift operator, which moves bits to the left.)
+// (For example, 1U << 2 takes binary 1, which is 0001,
+//  and shifts it two bits to the left to become 0100.)
+// (It determines
+//  whether the i-th bit of ch is 1 by taking the bitwise AND with each bit.)
+// (If the i-th bit of ch is 1, it sends SIGUSR2 (binary 1),
+//  if it's 0, it sends SIGUSR1 (binary 0).)
+// If the signal transmission fails, outputs an error and terminates.
+// Waits for the reception of an ACK for each transmitted bit.
 
 static void	send_bits_to_server(pid_t server_pid, const char *msg)
 {
@@ -100,10 +110,11 @@ static void	send_bits_to_server(pid_t server_pid, const char *msg)
 	}
 }
 
-// クライアントのメイン関数
-// 引数の数が正しくない場合はエラーを出力して終了
-// サーバーのPIDを解析し、無効なPIDの場合はエラーを出力して終了
-// SIGUSR1シグナルのハンドラを設定し、メッセージをサーバーに送信する
+// Client's main function.
+// If the number of arguments is incorrect, outputs an error and terminates.
+// Parses the server's PID and if it's an invalid PID,
+//  outputs an error and terminates.
+// Sets the handler for the SIGUSR1 signal and sends the message to the server.
 
 int	main(int argc, char **argv)
 {
