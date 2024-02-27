@@ -6,27 +6,26 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:58 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/28 07:48:23 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/28 08:44:30 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./libft/libft.h"
 #include "minitalk.h"
 
-// Handler that receives bits sent from the client and
-//  assembles them into characters.
-// Called every time a bit is received from the client.
-// Shifts the received bits to the left and adds the new bit.
-// If signo is SIGUSR2, set the least significant bit to 1.
-// (For example, the ASCII code for the character 'A' is 01000001.
-//  The client sends these 8 bits to the server one by one.)
-// (The first bit is 0, so SIGUSR1 is sent.
-//  The next bit is 1, so SIGUSR2 is sent.)
-// Once all the bits for a character are received,
-//  output the character and reset the variables.
-// Record the client's PID and notify the client of the successful reception.
-// If an error occurs while notifying the client of the successful reception,
-//  output the error and terminate.
+// A function that collects bits from the client
+//  and builds them into characters.
+// Used every time a bit arrives from the client.
+// Moves the collected bits over and adds the new one to the end.
+// If the signal is SIGUSR2, it changes the last bit to a 1.
+// (For an instance, the letter 'A' is represented by the bits 01000001.
+//  The client sends these bits one after the other.)
+// (The first bit is 0, triggering a SIGUSR1.
+//  The second bit is 1, triggering a SIGUSR2.)
+// When all bits for one character are in,
+//  it displays the character and resets for the next one.
+// It logs the client's PID and confirms back that the message was received.
+// If there's an error during confirmation, it reports the error and shuts down.
 
 static void	receive_bit(int signo, siginfo_t *info, void *context)
 {
