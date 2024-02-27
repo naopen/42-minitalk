@@ -6,18 +6,18 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 21:49:00 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 23:58:28 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static volatile sig_atomic_t	g_ack;
+volatile sig_atomic_t	g_received_ack = 0;
 
-static void	receive_ack(int signum)
+static void	receive_ack(int sig)
 {
-	g_ack = 1;
-	(void)signum;
+	(void)sig;
+	g_received_ack = 1;
 }
 
 static void	setup_signals(struct sigaction *act)
@@ -45,7 +45,7 @@ static void	send_char_as_bits(int pid, char ch)
 	bit_index = 7;
 	while (bit_index >= 0)
 	{
-		g_ack = 0;
+		g_received_ack = 0;
 		send_bit(pid, (ch >> bit_index) & 1);
 		bit_index--;
 	}
@@ -64,13 +64,13 @@ int	main(int argc, char **argv)
 	setup_signals(&act);
 	while (*argv[2])
 	{
-		g_ack = 0;
+		g_received_ack = 0;
 		send_char_as_bits(pid, *argv[2]++);
-		while (!g_ack)
+		while (!g_received_ack)
 			pause();
 	}
 	send_char_as_bits(pid, '\0');
-	while (!g_ack)
+	while (!g_received_ack)
 		pause();
 	return (0);
 }
