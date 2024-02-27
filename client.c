@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 21:41:10 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 21:49:00 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,5 @@ int	main(int argc, char **argv)
 	send_char_as_bits(pid, '\0');
 	while (!g_ack)
 		pause();
-	return (SUCCESS);
+	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:58 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 21:41:17 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 21:49:00 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	exit_handler(int signum)
 {
 	(void)signum;
 	ft_printf("\nServer is shutting down.\n");
-	exit(SUCCESS);
+	exit(0);
 }
 
 int	main(void)
@@ -58,5 +58,5 @@ int	main(void)
 	sigaction(SIGINT, &act_exit, NULL);
 	while (1)
 		pause();
-	return (SUCCESS);
+	return (0);
 }
