@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:58 by nkannan           #+#    #+#             */
-/*   Updated: 2024/02/27 14:22:43 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/02/27 19:38:50 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ static void	sig_handler(int signum, siginfo_t *info, void *ucontext)
 		ft_printf("%c", ch);
 		if (ch == '\0')
 			ft_printf("\n");
+		if (kill(info->si_pid, SIGUSR1) == -1)
+			exit(ERROR);
 		ch = 0;
 		bit_index = 0;
-		kill(info->si_pid, SIGUSR1);
 	}
 	(void)ucontext;
 }
@@ -42,14 +43,15 @@ static void	exit_handler(int signum)
 
 int	main(void)
 {
-	pid_t				pid;
 	struct sigaction	act;
 	struct sigaction	act_exit;
 
-	pid = getpid();
-	ft_printf("Server PID: %d\n", pid);
-	act.sa_flags = SA_SIGINFO;
+	ft_printf("Server PID: %d\n", getpid());
 	act.sa_sigaction = sig_handler;
+	act.sa_flags = SA_SIGINFO;
+	act.sa_flags |= SA_RESTART;
+	sigaddset(&act.sa_mask, SIGUSR1);
+	sigaddset(&act.sa_mask, SIGUSR2);
 	sigaction(SIGUSR1, &act, NULL);
 	sigaction(SIGUSR2, &act, NULL);
 	act_exit.sa_handler = exit_handler;
