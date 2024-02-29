@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/03/01 00:57:59 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/03/01 03:53:43 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ static pid_t	get_server_pid(const char *pid_str)
 	long	pid;
 
 	if (*pid_str == '\0' || !ft_strall(pid_str, ft_isdigit))
-		return (printf("pid: %s\n", pid_str), -1);
+		return (ft_printf("pid: %s\n", pid_str), -1);
 	pid = ft_atoi(pid_str);
 	if (pid <= 100 || pid > 99998)
-		return (printf("pid: %ld\n", pid), -1);
+		return (ft_printf("pid: %ld\n", pid), -1);
 	return ((pid_t)pid);
 }
 
@@ -112,7 +112,6 @@ int	main(int argc, char **argv)
 		ft_putendl_fd("Error: cannot set signal handler", STDERR_FILENO);
 		return (EXIT_FAILURE);
 	}
-	signal(SIGUSR1, ack_handler);
 	send_bits_to_server(server_pid, argv[2]);
 	return (EXIT_SUCCESS);
 }
