@@ -6,7 +6,7 @@
 /*   By: nkannan <nkannan@student.42tokyo.jp>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/21 02:04:37 by nkannan           #+#    #+#             */
-/*   Updated: 2024/03/01 04:07:54 by nkannan          ###   ########.fr       */
+/*   Updated: 2024/03/01 10:21:56 by nkannan          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static pid_t	get_server_pid(const char *pid_str)
 	if (ft_strlen(pid_str) >= 10 && pid_str[0] - '0' >= 3)
 		return (ft_printf("pid: %s\n", pid_str), -1);
 	pid = ft_atoi(pid_str);
-	if (pid <= 0 || pid > INT_MAX)
+	if (pid <= 100 || pid > 99998)
 		return (ft_printf("pid: %ld\n", pid), -1);
 	return ((pid_t)pid);
 }
